@@ -2,3 +2,7 @@
 *~
 *.tar.gz
 *.rpm
+src/usr/lib/systemd/system/qubes-vpn-forwarding.service
+src/usr/lib/systemd/system/qubes-vpn.service
+src/usr/sbin/qubes-vpn-forwarding
+src/usr/sbin/qubes-vpn-interface-control

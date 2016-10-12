@@ -8,7 +8,7 @@ After=network.target network.target qubes-network.service qubes-vpn-forwarding.s
 PrivateTmp=true
 Type=forking
 PIDFile=/var/run/qubes-vpn.pid
-ExecStart=/usr/sbin/openvpn --daemon --writepid /var/run/qubes-vpn.pid --cd /rw/config/qubes-vpn/ --config qubes-vpn.conf --route-noexec --script-security 2 --up /usr/sbin/qubes-vpn-interface-control --down /usr/sbin/qubes-vpn-interface-control
+ExecStart=@SBINDIR@/openvpn --daemon --writepid /var/run/qubes-vpn.pid --cd /rw/config/qubes-vpn/ --config qubes-vpn.conf --route-noexec --script-security 2 --up @SBINDIR@/qubes-vpn-interface-control --down @SBINDIR@/qubes-vpn-interface-control
 
 [Install]
 WantedBy=multi-user.target

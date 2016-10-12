@@ -1,0 +1,32 @@
+#!/bin/bash -e
+
+if [ "$1" == "on" ] ; then
+    @SBINDIR@/ip route add table 78 blackhole default metric 1000
+    @SBINDIR@/ip rule add fwmark 0x78 table 78
+    @SBINDIR@/iptables -t mangle -A PREROUTING -j MARK --set-mark 0x78 -i vif+
+    @SBINDIR@/iptables -t nat -L QUBES-VPN >& /dev/null || {
+        @SBINDIR@/iptables -t nat -N QUBES-VPN
+    }
+    @SBINDIR@/iptables-save | grep -q -- '-j QUBES-VPN' || {
+        @SBINDIR@/iptables -t nat -I PREROUTING 1 -m mark --mark 0x78 -j QUBES-VPN
+    }
+elif [ "$1" == "off" ] ; then
+    @SBINDIR@/iptables -t mangle -F PREROUTING
+    @SBINDIR@/ip rule del fwmark 0x78
+    @SBINDIR@/ip route flush table 78
+elif [ "$1" == "blackhole" ] ; then
+    while true ; do
+      if [ "$( @SBINDIR@/ip route list table 78 | head -1 | grep -v ^blackhole || true )" == "" ] ; then
+        break
+      fi
+      @SBINDIR@/ip route del table 78 $( @SBINDIR@/ip route list table 78 | head -1 | grep -v ^blackhole || true )
+    done
+elif [ "$1" == "setuprouting" ] ; then
+    subnet=$2
+    gateway=$3
+    device=$4
+    @SBINDIR@/ip route replace table 78 to "$subnet" dev "$device"
+    @SBINDIR@/ip route replace table 78 to default via "$gateway" dev "$device"
+    @SBINDIR@/ip route del to "$subnet" dev "$device"
+    @SBINDIR@/sysctl -w net.ipv4.conf."$device".rp_filter=2
+fi

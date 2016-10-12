@@ -9,8 +9,8 @@ PartOf=qubes-iptables.service
 PrivateTmp=true
 Type=oneshot
 RemainAfterExit=true
-ExecStart=/usr/sbin/qubes-vpn-forwarding on
-ExecStop=/usr/sbin/qubes-vpn-forwarding off
+ExecStart=@SBINDIR@/qubes-vpn-forwarding on
+ExecStop=@SBINDIR@/qubes-vpn-forwarding off
 
 [Install]
 WantedBy=multi-user.target

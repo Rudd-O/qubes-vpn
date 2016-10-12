@@ -11,6 +11,7 @@ URL:            https://github.com/Rudd-O/qubes-vpn
 Source0:	Source0: https://github.com/Rudd-O/%{name}/archive/{%version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildRequires:  make
+BuildRequires:  sed
 Requires: openvpn
 Requires: iptables
 Requires: /sbin/ip
@@ -26,15 +27,15 @@ This package lets you setup an OpenVPN-based leakproof VPN on Qubes OS.
 
 %build
 # variables must be kept in sync with install
-make DESTDIR=$RPM_BUILD_ROOT BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/
+make DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/
 
 %install
 rm -rf $RPM_BUILD_ROOT
 # variables must be kept in sync with build
-make install DESTDIR=$RPM_BUILD_ROOT BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/
+make install DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/
 
 %files
-%attr(0755, root, root) %{_bindir}/qubes-vpn*
+%attr(0755, root, root) %{_sbindir}/qubes-vpn*
 %attr(0644, root, root) %{_unitdir}/qubes-vpn*
 %{_prefix}/lib/systemd/system-preset/*qubes-vpn*
 %doc README.md

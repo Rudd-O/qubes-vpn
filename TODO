@@ -1,0 +1,2 @@
+* Run as unprivileged user.
+* Notify when connection / disconnection happens.

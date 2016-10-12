@@ -1,8 +1,10 @@
 %define debug_package %{nil}
 
+%define mybuildnumber %{?build_number}%{?!build_number:1}
+
 Name:           qubes-vpn
 Version:        0.0.1
-Release:        1%{?dist}
+Release:        %{mybuildnumber}%{?dist}
 Summary:        Leakproof VPN for your Qubes OS ProxyVMs
 BuildArch:      noarch
 

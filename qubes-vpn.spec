@@ -20,6 +20,7 @@ Requires: /sbin/ip
 Requires: /sbin/sysctl
 Requires: qubes-db
 Requires: util-linux
+Requires: ipcalc
 
 %description
 This package lets you setup an OpenVPN-based leakproof VPN on Qubes OS.

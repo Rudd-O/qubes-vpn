@@ -44,8 +44,8 @@ Click OK to close the dialog and save your configuration.
 
 Start your VPN VM.  Launch a terminal window on it.
 
-Create a directory /rw/config/qubes-vpn, and make sure that the directory
-is only readable by root.
+Create a directory `/rw/config/qubes-vpn`, and make sure that the directory
+is only readable by `root`.
 
 ```
 mkdir /rw/config/qubes-vpn
@@ -54,6 +54,10 @@ chmod 0700 /rw/config/qubes-vpn
 
 Add your VPN's configuration file to `/rw/config/qubes-vpn/qubes-vpn.conf`.
 Without this configuration file, the VPN will not start.
+
+Note that the configuration file, or the configuration sent by the OpenVPN
+server, must set / send a gateway.  This gateway will automatically be
+used as default route by the Qubes VPN system.
 
 You can add other files that your VPN configuration may need, right there,
 on the same directory.  If your `qubes-vpn.conf` file has references to

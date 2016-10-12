@@ -1,0 +1,41 @@
+#!/bin/bash -e
+
+myname=$( basename "$0" )
+
+if [ $script_type = up ] ; then
+  primary_dns=`/usr/bin/qubesdb-read /qubes-netvm-gateway`
+  secondary_dns=`/usr/bin/qubesdb-read /qubes-netvm-secondary-dns`
+  /usr/sbin/qubes-vpn-forwarding blackhole
+  /sbin/iptables -t nat -F QUBES-VPN
+  dnsstep=primary
+  for n in `seq 10000` ; do
+    if [ -n "$(eval echo \$foreign_option_$n)" ] ; then
+      dns=$(eval echo \$foreign_option_$n | grep DNS | awk ' { print $3 } ')
+      if [ -n "$dns" ] ; then
+        if [ "$dnsstep" = "primary" ] ; then
+          logger -t "$myname" "adding primary DNS $primary_dns to firewall rules"
+          /sbin/iptables -t nat -A QUBES-VPN -p udp -m udp --dport 53 -d "$primary_dns" -j DNAT --to-destination "$dns"
+          /sbin/iptables -t nat -A QUBES-VPN -p tcp -m tcp --dport 53 -d "$primary_dns" -j DNAT --to-destination "$dns"
+          dnsstep=secondary
+        elif [ "$dnsstep" = "secondary" ] ; then
+          logger -t "$myname" "adding secondary DNS $primary_dns to firewall rules"
+          /sbin/iptables -t nat -A QUBES-VPN -p udp -m udp --dport 53 -d "$secondary_dns" -j DNAT --to-destination "$dns"
+          /sbin/iptables -t nat -A QUBES-VPN -p tcp -m tcp --dport 53 -d "$secondary_dns" -j DNAT --to-destination "$dns"
+          dnsstep=nomoarnomoar
+        else
+          true
+        fi
+      fi
+    else
+      break
+    fi
+  done
+  eval $(ipcalc -4n "$ifconfig_local" "$ifconfig_netmask")
+  logger -t "$myname" "adding default route and subnet route $NETWORK/$ifconfig_netmask in $1 to VPN routing table"
+  /usr/sbin/qubes-vpn-forwarding setuprouting "$NETWORK"/"$ifconfig_netmask" "$route_vpn_gateway" "$1"
+  logger -t "$myname" "Finished Qubes VPN initialization"
+elif [ $script_type = down ] ; then
+  logger -t "$myname" "blackholing the VPN routing table"
+  /usr/sbin/qubes-vpn-forwarding blackhole
+  logger -t "$myname" "Finished Qubes VPN turndown"
+fi

@@ -1,0 +1,16 @@
+[Unit]
+Description=Forbid VM traffic until Qubes OS leakproof VPN is up
+ConditionPathExists=/var/run/qubes-service/qubes-vpn
+Before=qubes-network.service
+After=qubes-iptables.service
+PartOf=qubes-iptables.service
+
+[Service]
+PrivateTmp=true
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/usr/sbin/qubes-vpn-forwarding on
+ExecStop=/usr/sbin/qubes-vpn-forwarding off
+
+[Install]
+WantedBy=multi-user.target

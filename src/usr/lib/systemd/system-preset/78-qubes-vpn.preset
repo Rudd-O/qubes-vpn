@@ -1,0 +1,2 @@
+enable qubes-vpn.service
+enable qubes-vpn-forwarding.service

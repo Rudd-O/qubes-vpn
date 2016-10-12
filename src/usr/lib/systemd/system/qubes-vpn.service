@@ -1,0 +1,14 @@
+[Unit]
+Description=Qubes OS leakproof VPN
+ConditionPathExists=/rw/config/qubes-vpn/qubes-vpn.conf
+ConditionPathExists=/var/run/qubes-service/qubes-vpn
+After=network.target network.target qubes-network.service qubes-vpn-forwarding.service
+
+[Service]
+PrivateTmp=true
+Type=forking
+PIDFile=/var/run/qubes-vpn.pid
+ExecStart=/usr/sbin/openvpn --daemon --writepid /var/run/qubes-vpn.pid --cd /rw/config/qubes-vpn/ --config qubes-vpn.conf --route-noexec --script-security 2 --up /usr/sbin/qubes-vpn-interface-control --down /usr/sbin/qubes-vpn-interface-control
+
+[Install]
+WantedBy=multi-user.target

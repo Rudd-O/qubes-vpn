@@ -5,6 +5,8 @@ All VMs attached to the VPN VM are automatically and transparently
 routed through the VPN.  DNS requests do not hit the NetVM — they get routed
 through the VPN instead.
 
+![Qubes VPN](doc/Qubes VPN.png?raw=true "Qubes VPN")
+
 ## Installation
 
 To install the software:
@@ -122,9 +124,22 @@ After your tests succeed, shut off and destroy your temporary AppVM.
 ## Usage
 
 Attach as many ProxyVMs and AppVMs to the VPN VM as you desire.
-The firewall rules on attached AppVMs should work fine, but if
-they do not, you can interpose a ProxyVM between your VPN VM
-and your App VM.
+
+Since the VPN VM is a ProxyVM, the firewall rules on AppVMs
+attached to it should work fine.
+
+For additional security (you *are* running a daemon as root
+on the VPN VM!) you can interpose an additional ProxyVM
+between your VPN VM and your AppVM.
+
+**Security note**: firewall rules on AppVMs attached to the VPN VM
+are enforced by the VPN VM itself.  Placing firewall rules on the
+VPN VM to control traffic coming from those AppVMs will have no
+effect, as those rules can only influence traffic coming from the
+VPN software, since traffic from the AppVMs is already encapsulated
+in the VPN protocol.
+
+![Qubes VPN filtering rules](doc/Qubes VPN filtering rules.png?raw=true "Qubes VPN filtering rules")
 
 ## Troubleshooting and help
 

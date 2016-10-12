@@ -35,7 +35,8 @@ of your VPN server (TCP or UDP).  Type in the port number of your VPN server
 (with OpenVPN, it's typically 1194 or 443).
 
 Move to the Services tab.  Add a service `qubes-vpn` to the list, and ensure
-that the checkbox next to the service is checked.
+that the checkbox next to the service is checked.  Without that service in
+this list, the VPN will not start.
 
 Click OK to close the dialog and save your configuration.
 
@@ -52,6 +53,8 @@ chmod 0700 /rw/config/qubes-vpn
 ```
 
 Add your VPN's configuration file to `/rw/config/qubes-vpn/qubes-vpn.conf`.
+Without this configuration file, the VPN will not start.
+
 You can add other files that your VPN configuration may need, right there,
 on the same directory.  If your `qubes-vpn.conf` file has references to
 other files, a relative path to the same directory is enough, since the
@@ -103,11 +106,11 @@ verb 3
 </tls-auth>
 ```
 
+Shut off your VPN VM.
+
 ### Test your changes
 
 Create a temporary AppVM, attaching it to your new VPN VM.
-
-Shut off your VPN VM.
 
 Open a terminal in your temporary AppVM.  Both VMs will start up.
 

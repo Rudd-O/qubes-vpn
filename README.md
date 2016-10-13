@@ -46,12 +46,10 @@ Click OK to close the dialog and save your configuration.
 
 Start your VPN VM.  Launch a terminal window on it.
 
-Create a directory `/rw/config/qubes-vpn`, and make sure that the directory
-is only readable by `root`.
+Create a directory `/rw/config/qubes-vpn`.
 
 ```
 mkdir /rw/config/qubes-vpn
-chmod 0700 /rw/config/qubes-vpn
 ```
 
 Add your VPN's configuration file to `/rw/config/qubes-vpn/qubes-vpn.conf`.

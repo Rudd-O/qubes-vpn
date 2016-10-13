@@ -1,2 +1,1 @@
-* Run as unprivileged user.
-* Notify when connection / disconnection happens.
+* Eliminate requirement that VPN remote side set a default gateway.

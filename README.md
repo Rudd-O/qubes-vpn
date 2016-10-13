@@ -5,7 +5,9 @@ All VMs attached to the VPN VM are automatically and transparently
 routed through the VPN.  DNS requests do not hit the NetVM — they get routed
 through the VPN instead.  Connection and disconnection events are notified
 using the desktop notification system.  When the VPN connection is lost,
-traffic is automatically blackholed without any intervention.
+traffic is automatically blackholed without any intervention.  All system
+state changes during VPN operation are (a) volatile (b) minimal (c)
+non-interfering with normal Qubes OS ProxyVM operation.
 
 ![Qubes VPN](doc/Qubes VPN.png?raw=true "Qubes VPN")
 

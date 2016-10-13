@@ -1,0 +1,2 @@
+Defaults:qubes-vpn !requiretty
+qubes-vpn  ALL = NOPASSWD:@SBINDIR@/qubes-vpn-interface-control

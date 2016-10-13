@@ -2,12 +2,15 @@ BINDIR=/usr/bin
 SBINDIR=/usr/sbin
 UNITDIR=/usr/lib/systemd/system
 PRESETDIR=/usr/lib/systemd/system-preset
+SYSCONFDIR=/etc
 DESTDIR=
 
 objlist = src/usr/sbin/qubes-vpn-interface-control \
 	src/usr/sbin/qubes-vpn-forwarding \
 	src/usr/lib/systemd/system/qubes-vpn.service \
-	src/usr/lib/systemd/system/qubes-vpn-forwarding.service
+	src/usr/lib/systemd/system/qubes-vpn-forwarding.service \
+	src/usr/bin/qubes-vpn-notifier \
+	src/etc/sudoers.d/qubes-vpn
 
 all: $(objlist)
 
@@ -31,5 +34,8 @@ src/%: src/%.in
 install: all
 	install -Dm 755 src/usr/sbin/qubes-vpn-forwarding -t $(DESTDIR)/$(SBINDIR)/
 	install -Dm 755 src/usr/sbin/qubes-vpn-interface-control -t $(DESTDIR)/$(SBINDIR)/
+	install -Dm 755 src/usr/bin/qubes-vpn-notifier -t $(DESTDIR)/$(BINDIR)/
 	install -Dm 644 src/usr/lib/systemd/system/*.service -t $(DESTDIR)/$(UNITDIR)/
 	install -Dm 644 src/usr/lib/systemd/system-preset/*.preset -t $(DESTDIR)/$(PRESETDIR)/
+	install -Dm 440 src/etc/sudoers.d/qubes-vpn -t $(DESTDIR)/$(SYSCONFDIR)/sudoers.d/
+	install -Dm 644 src/etc/xdg/autostart/qubes-vpn-notifier.desktop -t $(DESTDIR)/$(SYSCONFDIR)/xdg/autostart/

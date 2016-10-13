@@ -7,8 +7,14 @@ After=network.target network.target qubes-network.service qubes-vpn-forwarding.s
 [Service]
 PrivateTmp=true
 Type=forking
-PIDFile=/var/run/qubes-vpn.pid
-ExecStart=@SBINDIR@/openvpn --daemon --writepid /var/run/qubes-vpn.pid --cd /rw/config/qubes-vpn/ --config qubes-vpn.conf --route-noexec --script-security 2 --up @SBINDIR@/qubes-vpn-interface-control --down @SBINDIR@/qubes-vpn-interface-control
+PIDFile=/var/run/qubes-vpn/pid
+ExecStartPre=@BINDIR@/mkdir -p /var/run/qubes-vpn
+ExecStartPre=@BINDIR@/chown -R qubes-vpn /var/run/qubes-vpn
+ExecStartPre=@BINDIR@/chgrp -R qubes-vpn /rw/config/qubes-vpn
+ExecStartPre=@BINDIR@/chmod -R g+rX /rw/config/qubes-vpn
+ExecStart=@SBINDIR@/openvpn --daemon --writepid /var/run/qubes-vpn/pid --cd /rw/config/qubes-vpn/ --config qubes-vpn.conf --route-noexec --script-security 2 --up @SBINDIR@/qubes-vpn-interface-control --down @SBINDIR@/qubes-vpn-interface-control --up-restart --user qubes-vpn --group qubes-vpn --ifconfig-noexec --persist-tun --mlock
+ExecStartPost=@BINDIR@/chown qubes-vpn /var/run/qubes-vpn/pid
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,23 @@
+#!/bin/bash -e
+
+msg() {
+    local title=$( echo "$1" | awk -F : ' { print $1 } ' )
+    local subtitle=$( echo "$1" | awk -F : ' { gsub(/^ /, "", $2); print $2 } ' )
+    notify-send --expire-time=10000 "$title" "$subtitle"
+}
+
+state=unknown
+
+while read -r line; do
+    if echo "$line"   | egrep -q '^Qubes VPN on (-|[a-z0-9_.])+ connected: ' ; then
+        if [ $state != connected ] ; then
+            state=connected
+            msg "$line"
+        fi
+    elif echo "$line" | egrep -q '^Qubes VPN on (-|[a-z0-9_.])+ disconnected: ' ; then
+        if [ $state != disconnected ] ; then
+            state=disconnected
+            msg "$line"
+        fi
+    fi
+done < <(tail -c+0 -F /var/run/qubes-vpn/events)

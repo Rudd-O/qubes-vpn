@@ -154,6 +154,20 @@ in the VPN protocol.
 
 ![Qubes VPN filtering rules](doc/Qubes VPN filtering rules.png?raw=true "Qubes VPN filtering rules")
 
+## Theory of operation
+
+Qubes VPN makes a fairly small set of runtime modifications to the state of the ProxyVM where it runs, which interfere the least with Qubes OS-specific state, when compared with other VPN solutions for Qubes OS.  Here they are:
+
+* The activation of `qubes-iptables.service` (on very early boot, right when the base firewall is initially set up) triggers the activation of `qubes-vpn-forwarding on`.  This sets up the steady state: all AppVM traffic goes to routing table 78, and routing on table 78 is 100% blackholed.
+* OpenVPN `up` event calls `qubes-vpn-forwarding setuprouting`.  This adds the routes that OpenVPN wants to table 78.  Then, OpenVPN `up` directs the firewall to route AppVM DNS requests to the VPN DNS servers.  Before `up`, all AppVM packets, including DNS, get blackholed.  After `up`, they are sent strictly over the VPN.
+* OpenVPN `down` calls `qubes-vpn-forwarding blackhole`.  Blackhole mode simply removes all table 78 routes that aren't the blackhole route, reverting to the steady state set by `qubes-vpn-forwarding on`.  This ends any routing on table 78, and therefore traffic from all AppVMs.  It is worth noting that, even if these routing rules were to not be deleted  they do automatically go away, when the TUN/TAP device goes down, thus no routing would happen anyway.
+* `qubes-vpn-forwarding off` is never called except when qubes-iptables service is reloaded on the ProxyVM (this does not happen unless you do it by hand).
+
+Among the things that Qubes VPN does *not* do for security reasons are:
+
+* mucking with, or allowing VPN software to muck with, the system routing tables (risky, could lead traffic from the ProxyVM to go where it shouldn't),
+* altering any firewall rules that may be reloaded or flushed by Qubes OS subsystems (comes with the possiblity for leaks).
+
 ## Troubleshooting and help
 
 ```

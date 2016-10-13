@@ -3,7 +3,9 @@
 This package allows you to set up a leakproof OpenVPN VM on your Qubes OS system.
 All VMs attached to the VPN VM are automatically and transparently
 routed through the VPN.  DNS requests do not hit the NetVM — they get routed
-through the VPN instead.
+through the VPN instead.  Connection and disconnection events are notified
+using the desktop notification system.  When the VPN connection is lost,
+traffic is automatically blackholed without any intervention.
 
 ![Qubes VPN](doc/Qubes VPN.png?raw=true "Qubes VPN")
 
@@ -131,6 +133,12 @@ After your tests succeed, shut off and destroy your temporary AppVM.
 ## Usage
 
 Attach as many ProxyVMs and AppVMs to the VPN VM as you desire.
+As you start them, the VPN VM will start up automatically, and it
+will notify you (on the notification area) that a connection has
+been established, as well as which route and DNS servers are
+being used.  When the connection is lost, traffic will be
+automatically blackholed to protect your privacy, and you will
+be notified of that event.
 
 Since the VPN VM is a ProxyVM, the firewall rules on AppVMs
 attached to it should work fine.

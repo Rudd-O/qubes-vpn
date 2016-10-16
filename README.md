@@ -156,6 +156,29 @@ in the VPN protocol.
 
 ![Qubes VPN filtering rules](doc/Qubes VPN filtering rules.png?raw=true "Qubes VPN filtering rules")
 
+### Updates of template VMs attached to the VPN VM
+
+Template VMs attempt to contact the Qubes updates proxy when
+performing updates.  Since (1) the Qubes updates proxy is usually
+your NetVM, (2) the VPN VM is behind the NetVM, (3) traffic from
+VMs attached to the VPN VM will only ever be routed through the
+VPN, that leads us to a simple conclusion: updates will fail to
+contact the NetVM's Qubes updates proxy, and therefore will
+fail to be applied.
+
+The fix is simple: you must set up a Qubes updates proxy in
+your VPN VM.
+
+In the *Services* tab of your VPN VM's properties
+dialog, add the service `qubes-updates-proxy`, and ensure
+its checkbox is checked.  After restarting the VPN VM,
+template VMs (with the right firewall rule *Allow connections
+to Updates Proxy*) will have automatic access to the updates
+proxy, and updates will work fine.  Note that update requests
+will skip the VPN completely, and will be routed directly
+through the network that the VPN uses to transmit and
+receive VPN traffic instead.
+
 ## Theory of operation
 
 Qubes VPN makes a fairly small set of runtime modifications to the state of the ProxyVM where it runs, which interfere the least with Qubes OS-specific state, when compared with other VPN solutions for Qubes OS.  Here they are:

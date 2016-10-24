@@ -25,6 +25,7 @@ Requires: sudo
 Requires: coreutils
 Requires: libnotify
 Requires: gawk
+Requires: gtk-update-icon-cache
 
 %description
 This package lets you setup an OpenVPN-based leakproof VPN on Qubes OS.
@@ -39,7 +40,7 @@ make DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_un
 %install
 rm -rf $RPM_BUILD_ROOT
 # variables must be kept in sync with build
-make install DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/ SYSCONFDIR=%{_sysconfdir}
+make install DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/ SYSCONFDIR=%{_sysconfdir} DATADIR=%{_datadir}
 
 %files
 %attr(0755, root, root) %{_sbindir}/qubes-vpn*
@@ -47,7 +48,8 @@ make install DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITD
 %attr(0644, root, root) %{_unitdir}/qubes-vpn*
 %attr(0644, root, root) %{_prefix}/lib/systemd/system-preset/*qubes-vpn*
 %attr(0440, root, root) %{_sysconfdir}/sudoers.d/qubes-vpn
-%attr(0644, root, root)%{_sysconfdir}/xdg/autostart/qubes-vpn-notifier.desktop
+%attr(0644, root, root) %{_sysconfdir}/xdg/autostart/qubes-vpn-notifier.desktop
+%attr(0644, root, root) %{_datadir}/icons/hicolor/48x48/apps/qubes-vpn.png
 %doc README.md
 
 %pre
@@ -58,9 +60,16 @@ getent passwd qubes-vpn >/dev/null || \
 
 %post
 %systemd_post qubes-vpn.service qubes-vpn-forwarding.service
+touch %{_datadir}/icons/hicolor >&/dev/null || :
 
 %preun
 %systemd_preun qubes-vpn.service qubes-vpn-forwarding.service
+
+%postun
+if [ $1 -eq 0 ]; then
+  touch --no-create %{_datadir}/icons/hicolor >&/dev/null || :
+  gtk-update-icon-cache %{_datadir}/icons/hicolor >&/dev/null || :
+fi
 
 %changelog
 * Wed Oct 12 2016 Manuel Amador (Rudd-O) <rudd-o@rudd-o.com>

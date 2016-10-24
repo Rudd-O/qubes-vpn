@@ -3,7 +3,7 @@
 msg() {
     local title=$( echo "$1" | awk -F : ' { print $1 } ' )
     local subtitle=$( echo "$1" | awk -F : ' { gsub(/^ /, "", $2); print $2 } ' )
-    notify-send --expire-time=10000 "$title" "$subtitle"
+    notify-send --app-name=qubes-vpn --expire-time=10000 "$title" "$subtitle"
 }
 
 state=unknown

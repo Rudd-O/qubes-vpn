@@ -1,6 +1,7 @@
 BINDIR=/usr/bin
 SBINDIR=/usr/sbin
 UNITDIR=/usr/lib/systemd/system
+DATADIR=/usr/share
 PRESETDIR=/usr/lib/systemd/system-preset
 SYSCONFDIR=/etc
 DESTDIR=
@@ -36,6 +37,7 @@ install: all
 	install -Dm 755 src/usr/sbin/qubes-vpn-interface-control -t $(DESTDIR)/$(SBINDIR)/
 	install -Dm 755 src/usr/bin/qubes-vpn-notifier -t $(DESTDIR)/$(BINDIR)/
 	install -Dm 644 src/usr/lib/systemd/system/*.service -t $(DESTDIR)/$(UNITDIR)/
+	install -Dm 644 src/usr/share/icons/hicolor/48x48/apps/qubes-vpn.png -t $(DESTDIR)/$(DATADIR)/icons/hicolor/48x48/apps/
 	install -Dm 644 src/usr/lib/systemd/system-preset/*.preset -t $(DESTDIR)/$(PRESETDIR)/
 	install -Dm 440 src/etc/sudoers.d/qubes-vpn -t $(DESTDIR)/$(SYSCONFDIR)/sudoers.d/
 	install -Dm 644 src/etc/xdg/autostart/qubes-vpn-notifier.desktop -t $(DESTDIR)/$(SYSCONFDIR)/xdg/autostart/

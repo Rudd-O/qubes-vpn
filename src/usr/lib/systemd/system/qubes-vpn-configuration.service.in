@@ -4,4 +4,4 @@ ConditionPathExists=@QUBESSERVICEDIR@/qubes-vpn
 
 [Service]
 Type=oneshot
-ExecStart=@BINDIR@/qubes-vpn-config-change-detector
+ExecStart=@LIBEXECDIR@/qubes-vpn-config-change-detector

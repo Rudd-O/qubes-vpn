@@ -2,7 +2,7 @@
 Version=1.0
 Encoding=UTF-8
 Name=Qubes VPN notifications
-Exec=qubes-vpn-notifier
+Exec=@LIBEXECDIR@/qubes-vpn-notifier
 Terminal=False
 Type=Application
 Categories=

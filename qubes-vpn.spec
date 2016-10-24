@@ -36,16 +36,17 @@ This package lets you setup an OpenVPN-based leakproof VPN on Qubes OS.
 
 %build
 # variables must be kept in sync with install
-make DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/ SYSCONFDIR=%{_sysconfdir}
+make DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/ SYSCONFDIR=%{_sysconfdir} LIBEXECDIR=%{_libexecdir}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 # variables must be kept in sync with build
-make install DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/ SYSCONFDIR=%{_sysconfdir} DATADIR=%{_datadir}
+make install DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/ SYSCONFDIR=%{_sysconfdir} DATADIR=%{_datadir} LIBEXECDIR=%{_libexecdir}
 
 %files
 %attr(0755, root, root) %{_sbindir}/qubes-vpn*
 %attr(0755, root, root) %{_bindir}/qubes-vpn*
+%attr(0755, root, root) %{_libexecdir}/qubes-vpn*
 %attr(0644, root, root) %{_unitdir}/qubes-vpn*
 %attr(0644, root, root) %{_prefix}/lib/systemd/system-preset/*qubes-vpn*
 %attr(0440, root, root) %{_sysconfdir}/sudoers.d/qubes-vpn

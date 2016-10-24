@@ -12,6 +12,9 @@ wrap() {
 }
 
 edit() {
+    local tmpfile
+    tmpfile=$(mktemp /tmp/"@VPNCONFFILE@".XXXXXXXX)
+    cat "$1" > "$tmpfile"
     if [ -n "$VISUAL" ] ; then
         wrap "$VISUAL" "$1"
     elif [ -n "$EDITOR" ] ; then
@@ -25,6 +28,8 @@ edit() {
     else
         wrap vi "$1"
     fi
+    cat "$tmpfile" > "$1"
+    rm -f "$tmpfile"
 }
 
 test -f "$conf" && {
@@ -47,9 +52,9 @@ test -f "$conf" && {
 # of placing the configuration in the right location for you.
 #
 # If your OpenVPN configuration refers to other files, such as credentials,
-# add them to the folder containing this file.  To refer to those additional
-# files, a relative path is enough, since the OpenVPN daemon changes its
-# working directory to the folder containing this file, prior to starting up.
+# add them to @VPNCONFDIR@.  References in this configuration to those
+# additional files should be relative paths, since the OpenVPN daemon changes
+# its working directory to @VPNCONFDIR@, prior to starting up.
 #
 # Once you are done editing the configuration, save this file and
 # close the editor.  The VPN service will start automatically.

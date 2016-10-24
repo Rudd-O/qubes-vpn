@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+if [ -e "@VPNRUNDIR@"/debug ] ; then
+    set -x
+fi
+
 if [ "$1" == "on" ] ; then
     @SBINDIR@/ip route add table 78 blackhole default metric 1000
     @SBINDIR@/ip rule add fwmark 0x78 table 78

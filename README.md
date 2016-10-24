@@ -146,12 +146,24 @@ Among the things that Qubes VPN does *not* do for security reasons are:
 
 ## Troubleshooting and help
 
+Within the VPN VM:
+
 ```
 sudo systemctl status qubes-vpn.service
 sudo systemctl status qubes-vpn-forwarding.service
 ```
 
-executed on the VPN VM, will give you diagnostic information.
+will give you diagnostic information.
+
+You can also observe the log of the system in realtime with
+`sudo journalctl -fab` as it attempts to connect or
+disconnect.
+
+If you need more debugging information, you can
+make the VPN interface control script spit large amounts of
+information by creating the file `/var/run/qubes-vpn/debug`
+and restarting `qubes-vpn.service` while looking at the
+`journalctl -fab` output.
 
 File issues on this project if you could not get it to work,
 or there are errors in the software or the documentation.

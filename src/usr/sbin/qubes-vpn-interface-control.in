@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+if [ -e "@VPNRUNDIR@"/debug ] ; then
+    set -x
+fi
+
 myname=$( basename "$0" )
 
 if [ "$UID" != "0" ] ; then

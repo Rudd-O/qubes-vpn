@@ -1,10 +1,18 @@
 #!/bin/bash -e
 
+conf=/rw/config/qubes-vpn/qubes-vpn.conf
+serviceflag=/var/run/qubes-service/qubes-vpn
+
 msg() {
     local title=$( echo "$1" | awk -F : ' { print $1 } ' )
     local subtitle=$( echo "$1" | awk -F : ' { gsub(/^ /, "", $2); print $2 } ' )
     notify-send --app-name=qubes-vpn --expire-time=10000 "$title" "$subtitle"
 }
+
+test -e "$serviceflag" || exit
+if ! test -f "$conf" ; then
+    msg "Qubes VPN must be configured: See the Setup heading in the README.md file."
+fi
 
 state=unknown
 

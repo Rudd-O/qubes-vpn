@@ -43,6 +43,12 @@ rm -rf $RPM_BUILD_ROOT
 # variables must be kept in sync with build
 make install DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/ SYSCONFDIR=%{_sysconfdir} DATADIR=%{_datadir} LIBEXECDIR=%{_libexecdir}
 
+%check
+if grep -r '@.*@' $RPM_BUILD_ROOT ; then
+    echo "Check failed: files with AT identifiers appeared" >&2
+    exit 1
+fi
+
 %files
 %attr(0755, root, root) %{_sbindir}/qubes-vpn*
 %attr(0755, root, root) %{_bindir}/qubes-vpn*

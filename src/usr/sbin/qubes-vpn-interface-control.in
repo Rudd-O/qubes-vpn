@@ -83,12 +83,6 @@ if [ "$script_type" == "up" ] ; then
     if [ -z "$ifconfig_local" ] ; then
       logger -t "$myname" -p error "OpenVPN did not pass us a valid ifconfig_local variable"
       env | sort >&2
-    elif [ -z "$ifconfig_netmask" ] ; then
-      logger -t "$myname" -p error "OpenVPN did not pass us a valid ifconfig_netmask variable"
-      env | sort >&2
-    elif [ -z "$ifconfig_broadcast" ] ; then
-      logger -t "$myname" -p error "OpenVPN did not pass us a valid ifconfig_broadcast variable"
-      env | sort >&2
     elif [ -z "$link_mtu" ] ; then
       logger -t "$myname" -p error "OpenVPN did not pass us a valid link_mtu variable"
       env | sort >&2
@@ -96,13 +90,29 @@ if [ "$script_type" == "up" ] ; then
       logger -t "$myname" -p error "OpenVPN did not pass us a valid route_vpn_gateway variable"
       env | sort >&2
     else
-      eval $(@BINDIR@/ipcalc -4n "$ifconfig_local" "$ifconfig_netmask") ; ifconfig_network="$NETWORK" ; unset NETWORK
-      echo "Setting up device $device with MTU $link_mtu" >&2
-      @SBINDIR@/ip link set dev "$device" up mtu "$link_mtu"
-      echo "Setting up address $ifconfig_local with netmask $ifconfig_netmask" >&2
-      @SBINDIR@/ip addr add dev "$device" "$ifconfig_local"/"$ifconfig_netmask" broadcast "$ifconfig_broadcast"
-      echo "Adding default route $route_vpn_gateway and subnet route $ifconfig_network/$ifconfig_netmask in $device to VPN routing table" >&2
-      @SBINDIR@/qubes-vpn-forwarding setuprouting "$ifconfig_network"/"$ifconfig_netmask" "$route_vpn_gateway" "$device"
+      if [ -n "$ifconfig_remote" ] ; then
+        echo "Setting up $dev_type device $device with MTU $link_mtu" >&2
+        @SBINDIR@/ip link set dev "$device" up mtu "$link_mtu"
+        echo "Setting up address $ifconfig_local with peer $ifconfig_remote" >&2
+        @SBINDIR@/ip addr add dev "$device" "$ifconfig_local" peer "$ifconfig_remote"
+        echo "Adding default route $route_vpn_gateway and peer route $ifconfig_remote in $device to VPN routing table" >&2
+        @SBINDIR@/qubes-vpn-forwarding setuprouting "$ifconfig_remote"/255.255.255.255 "$route_vpn_gateway" "$device"
+      else
+        if [ -z "$ifconfig_netmask" -o ] ; then
+          logger -t "$myname" -p error "OpenVPN did not pass us a valid ifconfig_netmask variable"
+          env | sort >&2
+        elif [ -z "$ifconfig_broadcast" ] ; then
+          logger -t "$myname" -p error "OpenVPN did not pass us a valid ifconfig_broadcast variable"
+          env | sort >&2
+        fi
+        eval $(@BINDIR@/ipcalc -4n "$ifconfig_local" "$ifconfig_netmask") ; ifconfig_network="$NETWORK" ; unset NETWORK
+        echo "Setting up $dev_type device $device with MTU $link_mtu" >&2
+        @SBINDIR@/ip link set dev "$device" up mtu "$link_mtu"
+        echo "Setting up address $ifconfig_local with netmask $ifconfig_netmask" >&2
+        @SBINDIR@/ip addr add dev "$device" "$ifconfig_local"/"$ifconfig_netmask" broadcast "$ifconfig_broadcast"
+        echo "Adding default route $route_vpn_gateway and subnet route $ifconfig_network/$ifconfig_netmask in $device to VPN routing table" >&2
+        @SBINDIR@/qubes-vpn-forwarding setuprouting "$ifconfig_network"/"$ifconfig_netmask" "$route_vpn_gateway" "$device"
+      fi
       for n in `seq 10000` ; do
         if [ -n "$(eval echo \$route_network_$n)" ] ; then
           net=$(eval echo \$route_network_$n )

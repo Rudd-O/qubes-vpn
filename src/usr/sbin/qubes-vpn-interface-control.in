@@ -118,7 +118,7 @@ if [ "$script_type" == "up" ] ; then
         fi
         msg="$msg."
       fi
-      echo "Qubes VPN on $HOSTNAME connected: $msg" >> /var/run/qubes-vpn/events
+      echo "Qubes VPN on $HOSTNAME connected: $msg" >> "@VPNRUNDIR@"/events
     fi
   fi
   echo "Finished Qubes VPN initialization" >&2
@@ -126,7 +126,7 @@ elif [ "$script_type" == "down" ] ; then
   echo "Starting Qubes VPN turndown" >&2
   echo "Blackholing the VPN routing table" >&2
   @SBINDIR@/qubes-vpn-forwarding blackhole
-  echo "Qubes VPN on $HOSTNAME disconnected: All traffic has been blackholed." >> /var/run/qubes-vpn/events
+  echo "Qubes VPN on $HOSTNAME disconnected: All traffic has been blackholed." >> "@VPNRUNDIR@"/events
   if [ "$initorrestart" == "init" ] ; then
     if [ -z "$ifconfig_local" ] ; then
       logger -t "$myname" -p error "OpenVPN did not pass us a valid ifconfig_local variable"

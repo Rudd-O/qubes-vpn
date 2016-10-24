@@ -4,6 +4,10 @@ UNITDIR=/usr/lib/systemd/system
 DATADIR=/usr/share
 PRESETDIR=/usr/lib/systemd/system-preset
 SYSCONFDIR=/etc
+VPNCONFDIR=/rw/config/qubes-vpn
+VPNCONFFILE=qubes-vpn.conf
+VPNRUNDIR=/var/run/qubes-vpn
+QUBESSERVICEDIR=/var/run/qubes-service
 DESTDIR=
 
 objlist = src/usr/sbin/qubes-vpn-interface-control \
@@ -34,7 +38,7 @@ srpm: dist
 	T=`mktemp -d` && rpmbuild --define "_topdir $$T" -ts qubes-vpn-`awk '/^Version:/ {print $$2}' qubes-vpn.spec`.tar.gz || { rm -rf "$$T"; exit 1; } && mv "$$T"/SRPMS/* . || { rm -rf "$$T"; exit 1; } && rm -rf "$$T"
 
 src/%: src/%.in
-	cat $< | sed 's|@SBINDIR@|$(SBINDIR)|g' | sed 's|@BINDIR@|$(BINDIR)|g' > $@
+	cat $< | sed 's|@SBINDIR@|$(SBINDIR)|g' | sed 's|@BINDIR@|$(BINDIR)|g' | sed 's|@VPNCONFDIR@|$(VPNCONFDIR)|g' | sed 's|@VPNCONFFILE@|$(VPNCONFFILE)|g ' | sed 's|@VPNRUNDIR@|$(VPNRUNDIR)|g ' | sed 's|@QUBESSERVICEDIR@|$(QUBESSERVICEDIR)|g ' > $@
 
 install: all
 	install -Dm 755 src/usr/sbin/qubes-vpn-forwarding -t $(DESTDIR)/$(SBINDIR)/

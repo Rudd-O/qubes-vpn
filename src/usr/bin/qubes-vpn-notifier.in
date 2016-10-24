@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-conf=/rw/config/qubes-vpn/qubes-vpn.conf
-serviceflag=/var/run/qubes-service/qubes-vpn
+conf="@VPNCONFDIR@/@VPNCONFFILE@"
+serviceflag="@QUBESSERVICEDIR@"/qubes-vpn
 
 msg() {
     local title=$( echo "$1" | awk -F : ' { print $1 } ' )
@@ -28,4 +28,4 @@ while read -r line; do
             msg "$line"
         fi
     fi
-done < <(tail -c+0 -F /var/run/qubes-vpn/events)
+done < <(tail -c+0 -F "@VPNRUNDIR@"/events)

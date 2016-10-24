@@ -1,6 +1,6 @@
 [Unit]
 Description=Qubes OS leakproof VPN configuration restarter
-ConditionPathExists=/var/run/qubes-service/qubes-vpn
+ConditionPathExists=@QUBESSERVICEDIR@/qubes-vpn
 
 [Service]
 Type=oneshot

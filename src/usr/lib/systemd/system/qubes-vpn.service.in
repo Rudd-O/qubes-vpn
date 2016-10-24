@@ -1,19 +1,19 @@
 [Unit]
 Description=Qubes OS leakproof VPN
-ConditionPathExists=/rw/config/qubes-vpn/qubes-vpn.conf
-ConditionPathExists=/var/run/qubes-service/qubes-vpn
+ConditionPathExists=@VPNCONFDIR@/@VPNCONFFILE@
+ConditionPathExists=@QUBESSERVICEDIR@/qubes-vpn
 After=network.target network.target qubes-network.service qubes-vpn-forwarding.service
 
 [Service]
 PrivateTmp=true
 Type=forking
-PIDFile=/var/run/qubes-vpn/pid
-ExecStartPre=@BINDIR@/mkdir -p /var/run/qubes-vpn
-ExecStartPre=@BINDIR@/chown -R qubes-vpn /var/run/qubes-vpn
-ExecStartPre=@BINDIR@/chgrp -R qubes-vpn /rw/config/qubes-vpn
-ExecStartPre=@BINDIR@/chmod -R g+rX /rw/config/qubes-vpn
-ExecStart=@SBINDIR@/openvpn --daemon --writepid /var/run/qubes-vpn/pid --cd /rw/config/qubes-vpn/ --config qubes-vpn.conf --route-noexec --script-security 2 --up @SBINDIR@/qubes-vpn-interface-control --down @SBINDIR@/qubes-vpn-interface-control --up-restart --user qubes-vpn --group qubes-vpn --ifconfig-noexec --persist-tun --mlock
-ExecStartPost=@BINDIR@/chown qubes-vpn /var/run/qubes-vpn/pid
+PIDFile=@VPNRUNDIR@/pid
+ExecStartPre=@BINDIR@/mkdir -p @VPNRUNDIR@
+ExecStartPre=@BINDIR@/chown -R qubes-vpn @VPNRUNDIR@
+ExecStartPre=@BINDIR@/chgrp -R qubes-vpn @VPNCONFDIR@
+ExecStartPre=@BINDIR@/chmod -R g+rX @VPNCONFDIR@
+ExecStart=@SBINDIR@/openvpn --daemon --writepid @VPNRUNDIR@/pid --cd @VPNCONFDIR@ --config @VPNCONFFILE@ --route-noexec --script-security 2 --up @SBINDIR@/qubes-vpn-interface-control --down @SBINDIR@/qubes-vpn-interface-control --up-restart --user qubes-vpn --group qubes-vpn --ifconfig-noexec --persist-tun --mlock
+ExecStartPost=@BINDIR@/chown qubes-vpn @VPNRUNDIR@/pid
 Restart=on-failure
 
 [Install]

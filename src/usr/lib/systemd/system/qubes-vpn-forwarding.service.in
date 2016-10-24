@@ -1,6 +1,6 @@
 [Unit]
 Description=Forbid VM traffic until Qubes OS leakproof VPN is up
-ConditionPathExists=/var/run/qubes-service/qubes-vpn
+ConditionPathExists=@QUBESSERVICEDIR@/qubes-vpn
 Before=qubes-network.service
 After=qubes-iptables.service
 PartOf=qubes-iptables.service

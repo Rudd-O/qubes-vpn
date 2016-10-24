@@ -3,7 +3,7 @@
 %define mybuildnumber %{?build_number}%{?!build_number:1}
 
 Name:           qubes-vpn
-Version:        0.0.5
+Version:        0.0.6
 Release:        %{mybuildnumber}%{?dist}
 Summary:        Leakproof VPN for your Qubes OS ProxyVMs
 BuildArch:      noarch
@@ -62,9 +62,11 @@ getent passwd qubes-vpn >/dev/null || \
 
 %post
 %systemd_post qubes-vpn.service qubes-vpn-forwarding.service qubes-vpn-configuration.path
-if [ "$(systemctl is-enabled qubes-vpn-configuration.path 2>&1)" == "disabled" ] ; then
-    systemctl --no-reload preset qubes-vpn-configuration.path
-fi
+for unit in qubes-vpn.service qubes-vpn-forwarding.service qubes-vpn-configuration.path ; do
+    if [ "$(systemctl is-enabled $unit 2>&1)" == "disabled" ] ; then
+        systemctl --no-reload preset $unit
+    fi
+done
 update-desktop-database >&/dev/null || :
 touch %{_datadir}/icons/hicolor >&/dev/null || :
 if [ $1 -eq 1 ]; then

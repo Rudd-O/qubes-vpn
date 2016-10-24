@@ -7,4 +7,4 @@ PathChanged=@VPNCONFDIR@/@VPNCONFFILE@
 PathChanged=@VPNCONFDIR@
 
 [Install]
-WantedBy=multi-user.service
+WantedBy=network.target

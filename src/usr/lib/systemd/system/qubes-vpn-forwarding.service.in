@@ -13,4 +13,4 @@ ExecStart=@SBINDIR@/qubes-vpn-forwarding on
 ExecStop=@SBINDIR@/qubes-vpn-forwarding off
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=network.target

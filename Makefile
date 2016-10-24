@@ -16,6 +16,7 @@ objlist = src/usr/sbin/qubes-vpn-interface-control \
 	src/usr/lib/systemd/system/qubes-vpn-forwarding.service \
 	src/usr/bin/qubes-vpn-notifier \
 	src/usr/bin/qubes-vpn-configurator \
+	src/usr/bin/qubes-vpn-config-change-detector \
 	src/usr/share/applications/qubes-vpn-configurator.desktop \
 	src/usr/lib/systemd/system/qubes-vpn-configuration.path \
 	src/usr/lib/systemd/system/qubes-vpn-configuration.service \
@@ -45,6 +46,7 @@ install: all
 	install -Dm 755 src/usr/sbin/qubes-vpn-interface-control -t $(DESTDIR)/$(SBINDIR)/
 	install -Dm 755 src/usr/bin/qubes-vpn-notifier -t $(DESTDIR)/$(BINDIR)/
 	install -Dm 755 src/usr/bin/qubes-vpn-configurator -t $(DESTDIR)/$(BINDIR)/
+	install -Dm 755 src/usr/bin/qubes-vpn-config-change-detector -t $(DESTDIR)/$(BINDIR)/
 	install -Dm 644 src/usr/lib/systemd/system/*.service -t $(DESTDIR)/$(UNITDIR)/
 	install -Dm 644 src/usr/lib/systemd/system/*.path -t $(DESTDIR)/$(UNITDIR)/
 	install -Dm 644 src/usr/share/icons/hicolor/48x48/apps/qubes-vpn.png -t $(DESTDIR)/$(DATADIR)/icons/hicolor/48x48/apps/

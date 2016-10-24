@@ -13,22 +13,34 @@ wrap() {
 
 edit() {
     local tmpfile
+    local bbefore
+    local bafter
+
+    bbefore=$(md5sum "$1" | cut -d " " -f 1)
+
     tmpfile=$(mktemp /tmp/"@VPNCONFFILE@".XXXXXXXX)
     cat "$1" > "$tmpfile"
+
     if [ -n "$VISUAL" ] ; then
-        wrap "$VISUAL" "$1"
+        wrap "$VISUAL" "$tmpfile"
     elif [ -n "$EDITOR" ] ; then
-        wrap "$EDITOR" "$1"
+        wrap "$EDITOR" "$tmpfile"
     elif type gedit >/dev/null 2>&1 ; then
-        gedit "$1"
+        gedit "$tmpfile"
     elif type kwrite >/dev/null 2>&1 ; then
-        kwrite "$1"
+        kwrite "$tmpfile"
     elif type nano >/dev/null 2>&1 ; then
-        wrap nano "$1"
+        wrap nano "$tmpfile"
     else
-        wrap vi "$1"
+        wrap vi "$tmpfile"
     fi
-    cat "$tmpfile" > "$1"
+
+    bafter=$(md5sum "$tmpfile" | cut -d " " -f 1)
+
+    if [ "$bbefore" != "$bafter" ] ; then
+        cat "$tmpfile" > "$1"
+    fi
+
     rm -f "$tmpfile"
 }
 

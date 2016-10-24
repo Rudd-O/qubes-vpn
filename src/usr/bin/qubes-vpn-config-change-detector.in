@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+currstate=$(md5sum "@VPNCONFDIR@"/* 2>/dev/null || true | grep -v '.sample' | sort)
+prevstate=$(cat "@VPNRUNDIR@"/config-state 2>/dev/null || true)
+echo "$currstate" > "@VPNRUNDIR@"/config-state 2>/dev/null || true
+
+if [ "$currstate" != "$prevstate" ] ; then
+    echo "Qubes VPN configuration changed, restarting VPN in 1 second" >&2
+    sleep 1
+    systemctl --no-block restart qubes-vpn.service
+fi

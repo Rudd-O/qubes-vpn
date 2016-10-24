@@ -1,0 +1,9 @@
+[Unit]
+Description=Qubes OS leakproof VPN configuration restarter
+ConditionPathExists=/var/run/qubes-service/qubes-vpn
+
+[Service]
+Type=oneshot
+ExecStartPre=@BINDIR@/sleep 0.5
+ExecStart=@BINDIR@/systemctl --no-block restart qubes-vpn.service
+ExecStartPost=@BINDIR@/sleep 0.5

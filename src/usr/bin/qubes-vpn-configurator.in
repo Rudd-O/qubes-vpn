@@ -1,0 +1,121 @@
+#!/bin/bash -e
+
+conf=/rw/config/qubes-vpn/qubes-vpn.conf
+confdir=$(dirname "$conf")
+
+wrap() {
+    if tty >/dev/null 2>&1 ; then
+        "$@"
+    else
+        xterm -e "$@"
+    fi
+}
+
+edit() {
+    if [ -n "$VISUAL" ] ; then
+        wrap "$VISUAL" "$1"
+    elif [ -n "$EDITOR" ] ; then
+        wrap "$EDITOR" "$1"
+    elif type gedit >/dev/null 2>&1 ; then
+        gedit "$1"
+    elif type kwrite >/dev/null 2>&1 ; then
+        kwrite "$1"
+    elif type nano >/dev/null 2>&1 ; then
+        wrap nano "$1"
+    else
+        wrap vi "$1"
+    fi
+}
+
+test -f "$conf" && {
+    before=$(md5sum "$conf")
+    edit "$conf"
+    after=$(md5sum "$conf")
+} || {
+    created=
+    test -d "$confdir" || {
+        created=true
+        sudo mkdir -p "$confdir"
+        sudo chown user "$confdir"
+    }
+
+    cat > "$conf.sample" << "EOF"
+# Qubes VPN configuration
+# =======================
+#
+# Place your VPN configuration in this file.  This progam will take care
+# of placing the configuration in the right location for you.
+#
+# If your OpenVPN configuration refers to other files, such as credentials,
+# add them to the folder containing this file.  To refer to those additional
+# files, a relative path is enough, since the OpenVPN daemon changes its
+# working directory to the folder containing this file, prior to starting up.
+#
+# Once you are done editing the configuration, save this file and
+# close the editor.  The VPN service will start automatically.
+#
+# Problems? Refer to the README.md file included in this program for
+# troubleshooting instructions and issue reporting information.
+#
+# Ensure that your OpenVPN server sends a default gateway.  This gateway
+# will be automatically used as the default route for the VMs that use
+# this VPN VM as NetVM.
+#
+# Here is a sample configuration file.  Note how it refers to a file
+# qubes-vpn.creds that must be created by you in the same directory.
+#
+# ========= Start sample file =========
+#client
+#dev tun0
+#proto udp
+#
+# # host and port
+#remote mullvad.net 1194
+#resolv-retry infinite
+#nobind
+#
+# # username and password stored in file qubes-vpn.creds
+#auth-user-pass qubes-vpn.creds
+#auth-retry nointeract
+#
+#ca [inline]
+#
+#tls-client
+#tls-auth [inline]
+#ns-cert-type server
+#
+#keepalive 10 30
+#cipher AES-256-CBC
+#persist-key
+#persist-tun
+#comp-lzo
+#tun-mtu 1500
+#mssfix 1200
+#passtos
+#verb 3
+#
+#<ca>
+#-----BEGIN CERTIFICATE-----
+#...
+#-----END CERTIFICATE-----
+#</ca>
+#
+#<tls-auth>
+#-----BEGIN OpenVPN Static key V1-----
+#...
+#-----END OpenVPN Static key V1-----
+#</tls-auth>
+# ========== End sample file ==========
+
+EOF
+    before=$(md5sum "$conf".sample)
+    edit "$conf".sample
+    after=$(md5sum "$conf".sample)
+    if [ "$before" != "$after" ] ; then
+        mv -f "$conf".sample "$conf"
+    else
+        if [ -n "$created" ] ; then
+            sudo rm -rf "$confdir"
+        fi
+    fi
+}

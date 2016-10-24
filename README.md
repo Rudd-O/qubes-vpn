@@ -22,6 +22,7 @@ To install the software:
   `qvm-copy-to-vm fedora-23 /path/to/qubes-vpn*.noarch.rpm`
 * Install the RPM on the template:
   `dnf install /path/to/qubes-vpn*.noarch.rpm`
+* Power off the template.
 
 ## Setup
 
@@ -44,75 +45,25 @@ this list, the VPN will not start.
 
 Click OK to close the dialog and save your configuration.
 
+Optionally, add the *Qubes VPN configurator* program to the menu of your
+VPN VM.  In the main menu, look for your VPN VM, then select
+*Add more shortcuts*, where you will be able to find and add the VPN
+configurator icon to your menu.
+
 ### Setup your VPN configuration
 
-Start your VPN VM.  Launch a terminal window on it.
+Launch the program `qubes-vpn-configurator` on the VPN VM (this will be
+easy to do if you added the *Qubes VPN configurator* program to the
+menu of your VPN VM).  This program will let you edit your VPN
+configuration and help you place any credential files in the right
+places.
 
-Create a directory `/rw/config/qubes-vpn`.
+Once you are done, save the file and close the editor.
 
-```
-mkdir /rw/config/qubes-vpn
-```
+At this point, the VPN should start running in the VPN VM.
 
-Add your VPN's configuration file to `/rw/config/qubes-vpn/qubes-vpn.conf`.
-Without this configuration file, the VPN will not start.
-
-Note that the configuration file, or the configuration sent by the OpenVPN
-server, must set / send a gateway.  This gateway will automatically be
-used as default route by the Qubes VPN system.
-
-You can add other files that your VPN configuration may need, right there,
-on the same directory.  If your `qubes-vpn.conf` file has references to
-other files, a relative path to the same directory is enough, since the
-OpenVPN daemon changes to that directory prior to starting up.
-
-Here is a sample `qubes-vpn.conf`.  Note how it refers to a file
-`qubes-vpn.creds` that must be created by you in the same directory.
-
-```
-client
-dev tun0
-proto udp
-
-# host and port
-remote mullvad.net 1194
-resolv-retry infinite
-nobind
-
-# username and password stored in qubes-vpn.creds
-auth-user-pass qubes-vpn.creds
-auth-retry nointeract
-
-ca [inline]
-
-tls-client
-tls-auth [inline]
-ns-cert-type server
-
-keepalive 10 30
-cipher AES-256-CBC
-persist-key
-persist-tun
-comp-lzo
-tun-mtu 1500
-mssfix 1200
-passtos
-verb 3
-
-<ca>
------BEGIN CERTIFICATE-----
-...
------END CERTIFICATE-----
-</ca>
-
-<tls-auth>
------BEGIN OpenVPN Static key V1-----
-...
------END OpenVPN Static key V1-----
-</tls-auth>
-```
-
-Shut off your VPN VM.
+You can troubleshoot the VPN service by looking at the output of
+`sudo journalctl -fab` on your VPN VM in real time.
 
 ### Test your changes
 

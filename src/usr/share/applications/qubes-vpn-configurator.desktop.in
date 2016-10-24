@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Qubes VPN configurator
+Comment=Configure your Qubes VPN
+TryExec=@BINDIR@/qubes-vpn-configurator
+Exec=@BINDIR@/qubes-vpn-configurator
+Icon=qubes-vpn
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Settings;
+Keywords=VPN;Network;

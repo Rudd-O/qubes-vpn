@@ -1,0 +1,10 @@
+[Unit]
+Description=Qubes OS leakproof VPN configuration monitor
+ConditionPathExists=/var/run/qubes-service/qubes-vpn
+
+[Path]
+PathChanged=/rw/config/qubes-vpn/qubes-vpn.conf
+PathChanged=/rw/config/qubes-vpn
+
+[Install]
+WantedBy=multi-user.service

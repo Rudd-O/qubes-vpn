@@ -11,7 +11,7 @@ msg() {
 
 test -e "$serviceflag" || exit
 if ! test -f "$conf" ; then
-    msg "Qubes VPN must be configured: See the Setup heading in the README.md file."
+    msg "Qubes VPN is ready to be configured: Run the qubes-vpn-configurator program on your VPN VM to get started."
 fi
 
 state=unknown

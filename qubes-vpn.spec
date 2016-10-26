@@ -44,7 +44,7 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT SBINDIR=%{_sbindir} BINDIR=%{_bindir} UNITDIR=%{_unitdir} PRESETDIR=%{_prefix}/lib/systemd/system-preset/ SYSCONFDIR=%{_sysconfdir} DATADIR=%{_datadir} LIBEXECDIR=%{_libexecdir}
 
 %check
-if grep -r '@.*@' $RPM_BUILD_ROOT ; then
+if grep --exclude='*.png' -r '@.*@' -- $RPM_BUILD_ROOT ; then
     echo "Check failed: files with AT identifiers appeared" >&2
     exit 1
 fi

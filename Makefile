@@ -1,3 +1,4 @@
+PROGNAME=qubes-vpn
 BINDIR=/usr/bin
 SBINDIR=/usr/sbin
 UNITDIR=/usr/lib/systemd/system
@@ -32,13 +33,13 @@ clean:
 	rm -f $(objlist)
 
 dist: clean
-	DIR=qubes-vpn-`awk '/^Version:/ {print $$2}' qubes-vpn.spec` && FILENAME=$$DIR.tar.gz && tar cvzf "$$FILENAME" --exclude "$$FILENAME" --exclude .git --exclude .gitignore -X .gitignore --transform="s|^|$$DIR/|" --show-transformed *
+	DIR=$(PROGNAME)-`awk '/^Version:/ {print $$2}' $(PROGNAME).spec` && FILENAME=$$DIR.tar.gz && tar cvzf "$$FILENAME" --exclude "$$FILENAME" --exclude .git --exclude .gitignore -X .gitignore --transform="s|^|$$DIR/|" --show-transformed *
 
 rpm: dist
-	T=`mktemp -d` && rpmbuild --define "_topdir $$T" -ta qubes-vpn-`awk '/^Version:/ {print $$2}' qubes-vpn.spec`.tar.gz || { rm -rf "$$T"; exit 1; } && mv "$$T"/RPMS/*/* "$$T"/SRPMS/* . || { rm -rf "$$T"; exit 1; } && rm -rf "$$T"
+	T=`mktemp -d` && rpmbuild --define "_topdir $$T" -ta $(PROGNAME)-`awk '/^Version:/ {print $$2}' $(PROGNAME).spec`.tar.gz || { rm -rf "$$T"; exit 1; } && mv "$$T"/RPMS/*/* "$$T"/SRPMS/* . || { rm -rf "$$T"; exit 1; } && rm -rf "$$T"
 
 srpm: dist
-	T=`mktemp -d` && rpmbuild --define "_topdir $$T" -ts qubes-vpn-`awk '/^Version:/ {print $$2}' qubes-vpn.spec`.tar.gz || { rm -rf "$$T"; exit 1; } && mv "$$T"/SRPMS/* . || { rm -rf "$$T"; exit 1; } && rm -rf "$$T"
+	T=`mktemp -d` && rpmbuild --define "_topdir $$T" -ts $(PROGNAME)-`awk '/^Version:/ {print $$2}' $(PROGNAME).spec`.tar.gz || { rm -rf "$$T"; exit 1; } && mv "$$T"/SRPMS/* . || { rm -rf "$$T"; exit 1; } && rm -rf "$$T"
 
 src/%: src/%.in
 	cat $< | sed 's|@SBINDIR@|$(SBINDIR)|g' | sed 's|@BINDIR@|$(BINDIR)|g' | sed 's|@LIBEXECDIR@|$(LIBEXECDIR)|g' | sed 's|@VPNCONFDIR@|$(VPNCONFDIR)|g' | sed 's|@VPNCONFFILE@|$(VPNCONFFILE)|g ' | sed 's|@VPNRUNDIR@|$(VPNRUNDIR)|g ' | sed 's|@QUBESSERVICEDIR@|$(QUBESSERVICEDIR)|g ' > $@

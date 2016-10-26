@@ -10,7 +10,7 @@ BuildArch:      noarch
 
 License:        GPLv3+
 URL:            https://github.com/Rudd-O/qubes-vpn
-Source0:	Source0: https://github.com/Rudd-O/%{name}/archive/{%version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:	https://github.com/Rudd-O/%{name}/archive/{%version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildRequires:  make
 BuildRequires:  sed

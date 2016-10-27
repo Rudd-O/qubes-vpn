@@ -33,11 +33,20 @@ so you can restrict the traffic that the VPN VM itself generates.
 
 Open the *Firewall rules* tab of your new ProxyVM's preferences page.
 
-*Deny network access* except for *Allow DNS queries*.
+*Deny network access* except for *Allow DNS queries*.  If tne VPN server
+is just an IP address (check the configuration given you by the VPN provider)
+then you do not have to *Allow DNS queries* at all.
 
-Add a single rule that has `*` for address (all hosts).  Select the protocol
-of your VPN server (TCP or UDP).  Type in the port number of your VPN server
-(with OpenVPN, it's typically 1194 or 443).
+Add a single rule:
+
+* Address: either `*` (all hosts) as address (use this when you do not
+  know the IP address of the VPN server in advance, and all you have is
+  a DNS host name), or the fixed VPN IP address (if your VPN configuration
+  has a fixed IP address).
+* Protocol: choose the protocol that your VPN server configuration indicates
+  (TCP or UDP).
+* Port number: type in the port number of your VPN server (with OpenVPN,
+  it's typically 1194, 5000 or 443, but refer to your VPN configuration).
 
 Move to the Services tab.  Add a service `qubes-vpn` to the list, and ensure
 that the checkbox next to the service is checked.  Without that service in
@@ -106,6 +115,14 @@ VPN software, since traffic from the AppVMs is already encapsulated
 in the VPN protocol.
 
 ![Qubes VPN filtering rules](doc/Qubes VPN filtering rules.png?raw=true "Qubes VPN filtering rules")
+
+**Security note**: DNS requests from the AppVMs attached to the
+VPN VM will go strictly to the VPN provider's DNS servers, and
+never to the DNS servers configured on the Qubes NetVM.  DNS
+requests initiated by the VPN VM itself (e.g. requests to resolve
+the VPN endpoint's address to a set of IPs to connect to) will
+go strictly to the NetVM attached to the VPN VM, and then to
+the DNS servers that the NetVM is using.
 
 ### Updates of template VMs attached to the VPN VM
 

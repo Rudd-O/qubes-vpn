@@ -26,10 +26,18 @@ To install the software:
 
 ## Setup
 
-### Setup your VPN VM
+### Create your VPN VM
 
-Use the Qubes Manager to create a ProxyVM.  Attach it to your system's ProxyVM,
-so you can restrict the traffic that the VPN VM itself generates.
+Use the Qubes Manager to create a new ProxyVM, which will serve as
+the VPN VM (we'll refer to it as the VPN VM from this point on).
+Select your system's ProxyVM as the NetVM of the VPN VM, so you can
+control the traffic that the VPN VM generates.
+
+(Note: you could also attach the VPN VM directly to your system's
+NetVM, which will work, but you won't be able to firewall the
+VPN VM as instructed by the next section.  Your call.)
+
+### Firewall your VPN VM
 
 Open the *Firewall rules* tab of your new ProxyVM's preferences page.
 
@@ -47,6 +55,8 @@ Add a single rule:
   (TCP or UDP).
 * Port number: type in the port number of your VPN server (with OpenVPN,
   it's typically 1194, 5000 or 443, but refer to your VPN configuration).
+
+### Add the Qubes VPN service to your VPN VM
 
 Move to the Services tab.  Add a service `qubes-vpn` to the list, and ensure
 that the checkbox next to the service is checked.  Without that service in

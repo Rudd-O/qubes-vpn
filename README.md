@@ -9,7 +9,7 @@ traffic is automatically blackholed without any intervention.  All system
 state changes during VPN operation are (a) volatile (b) minimal (c)
 non-interfering with normal Qubes OS ProxyVM operation.
 
-![Qubes VPN](doc/Qubes VPN.png?raw=true "Qubes VPN")
+![Qubes VPN](doc/Qubes%20VPN.png?raw=true "Qubes VPN")
 
 ## Installation
 

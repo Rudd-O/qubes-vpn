@@ -39,9 +39,9 @@ VPN VM as instructed by the next section.  Your call.)
 
 ### Firewall your VPN VM
 
-Open the *Firewall rules* tab of your new ProxyVM's preferences page.
+Open the *Firewall rules* tab of your new VPN VM's preferences page.
 
-*Deny network access* except for *Allow DNS queries*.  If tne VPN server
+*Deny network access* except for *Allow DNS queries*.  If the VPN server
 is just an IP address (check the configuration given you by the VPN provider)
 then you do not have to *Allow DNS queries* at all.
 
